@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "Birmingham, Alabama"
+description = "A simple, mobile-friendly one-page introduction to Birmingham, Alabama, with local food, quick facts, a city leader, the state bird, and a personal favorites list."
+version = "1.0.0"
+id = "artifacts/birmingham-al"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 19738
+
+[services.development]
+run = "pnpm --filter @workspace/birmingham-al run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/birmingham-al", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/birmingham-al/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "19738"
+BASE_PATH = "/"
