@@ -12,20 +12,38 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Birmingham, Alabama" />
     <meta name="twitter:description" content="A warm, local snapshot of Birmingham, Alabama: its people, food, and Southern character." />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css" />
-    <script src="script.js" defer></script>
+    <script type="module" src="script.js"></script>
   </head>
   <body>
     <main>
+      <div class="utility-bar">
+        <div class="utility-inner">
+          <span class="utility-city"><span class="utility-dot" aria-hidden="true"></span> BIRMINGHAM, AL &nbsp;·&nbsp; THE MAGIC CITY</span>
+          <nav class="utility-links" aria-label="Visitor links">
+            <a href="#food">FOOD &amp; DRINK</a>
+            <a href="#quick-facts">CITY FACTS</a>
+            <a href="#state-bird">STATE BIRD</a>
+            <a href="#local-notes">LOCAL NOTES</a>
+          </nav>
+        </div>
+      </div>
       <header class="topbar">
         <a class="wordmark" href="#top" aria-label="Birmingham, Alabama home">
           <span class="mark" aria-hidden="true">B</span>
-          <span>Birmingham<span class="wordmark-small">, Alabama</span></span>
+          <span>BIRMINGHAM<span class="wordmark-small">ALABAMA</span></span>
         </a>
-        <a class="top-link" href="#local-notes">A little local love <span aria-hidden="true">↘</span></a>
+        <nav class="main-nav" aria-label="Main navigation">
+          <a href="#food">Eat &amp; Drink</a>
+          <a href="#quick-facts">About Birmingham</a>
+          <a href="#mayor">City Hall</a>
+          <a href="#state-bird">Things to Do</a>
+          <a class="active" href="#local-notes">Before You Go</a>
+        </nav>
       </header>
 
       <section class="hero" id="top" aria-labelledby="hero-title">
@@ -60,7 +78,7 @@
         </div>
       </section>
 
-      <section class="facts-section" aria-labelledby="facts-title">
+      <section class="facts-section" id="quick-facts" aria-labelledby="facts-title">
         <div class="facts-heading">
           <p class="eyebrow">A few things to know</p>
           <h2 id="facts-title">Small facts.<br /><em>Big character.</em></h2>
@@ -72,13 +90,13 @@
         </ul>
       </section>
 
-      <section class="mayor-section" aria-label="Birmingham city leadership">
+      <section class="mayor-section" id="mayor" aria-label="Birmingham city leadership">
         <div class="mayor-label"><span class="tiny-star" aria-hidden="true">✳</span> CITY HALL</div>
         <div class="mayor-name">Randall L. Woodfin</div>
         <div class="mayor-role">Mayor of Birmingham <span>·</span> <a href="https://www.birminghamal.gov/government/mayors-office/about-mayor" target="_blank" rel="noreferrer">Meet the mayor <span aria-hidden="true">↗</span></a></div>
       </section>
 
-      <section class="bird-section" aria-labelledby="bird-title">
+      <section class="bird-section" id="state-bird" aria-labelledby="bird-title">
         <div class="bird-copy">
           <p class="eyebrow">A little Alabama sunshine</p>
           <h2 id="bird-title">Say hello to<br /><em>the yellowhammer.</em></h2>
@@ -109,7 +127,7 @@
       </section>
 
       <footer class="footer">
-        <a class="wordmark footer-mark" href="#top"><span class="mark" aria-hidden="true">B</span><span>Birmingham<span class="wordmark-small">, Alabama</span></span></a>
+        <a class="wordmark footer-mark" href="#top"><span class="mark" aria-hidden="true">B</span><span>BIRMINGHAM<span class="wordmark-small">ALABAMA</span></span></a>
         <p>Come as you are. Stay a little longer.</p>
         <a href="#top" class="back-top">BACK TO TOP <span aria-hidden="true">↑</span></a>
       </footer>
