@@ -42,6 +42,7 @@
           <a href="#quick-facts">About Birmingham</a>
           <a href="#mayor">City Hall</a>
           <a href="#state-bird">Things to Do</a>
+          <a href="#city-guide">City Guide</a>
           <a class="active" href="#local-notes">Before You Go</a>
         </nav>
       </header>
@@ -124,6 +125,70 @@
           <p class="form-note" id="form-note" aria-live="polite">Your list lives only in this visit.</p>
         </form>
         <ol class="likes-list" id="likes-list" aria-live="polite"></ol>
+      </section>
+
+      <section class="city-guide-section" id="city-guide" aria-labelledby="city-guide-title">
+        <div class="city-guide-heading">
+          <p class="eyebrow">Ask a local</p>
+          <h2 id="city-guide-title">Your Birmingham<br /><em>city guide.</em></h2>
+          <p>Got a question about the Magic City? Ask away. The guide uses the facts on this page and keeps the conversation right here in your browser.</p>
+        </div>
+
+        <div class="city-guide-panel">
+          <div class="chat-topline">
+            <span class="guide-status-dot" aria-hidden="true"></span>
+            <span>BIRMINGHAM CITY GUIDE</span>
+            <span class="chat-memory-note">Conversation stays in this visit</span>
+          </div>
+
+          <div class="chat-transcript" id="chat-transcript" aria-live="polite" aria-relevant="additions text">
+            <article class="chat-message guide-message">
+              <p class="message-speaker">YOUR LOCAL GUIDE</p>
+              <p>Well hey there. Ask me about Birmingham’s barbecue, local facts, or what makes this city special.</p>
+            </article>
+          </div>
+
+          <form class="chat-form" id="chat-form">
+            <label for="chat-input">What would you like to know?</label>
+            <div class="chat-input-row">
+              <textarea id="chat-input" name="message" rows="2" maxlength="4000" placeholder="What should I eat first?" required></textarea>
+              <button id="chat-submit" type="submit">Ask <span aria-hidden="true">↗</span></button>
+            </div>
+            <p class="chat-status" id="chat-status" aria-live="polite">Answers are based on the facts in this guide.</p>
+          </form>
+
+          <div class="prompt-lab">
+            <div class="prompt-lab-heading">
+              <div>
+                <p class="eyebrow">Tune the response</p>
+                <h3>Prompt Lab</h3>
+              </div>
+              <span class="prompt-lab-caption">Settings apply to your next question</span>
+            </div>
+            <div class="prompt-controls">
+              <label class="prompt-control" for="temperature-slider">
+                <span>Temperature <output id="temperature-value" for="temperature-slider">1.0</output></span>
+                <input id="temperature-slider" type="range" min="0" max="2" step="0.1" value="1" />
+                <small>Lower is more consistent; higher is more varied.</small>
+              </label>
+              <label class="prompt-control" for="max-tokens-slider">
+                <span>Max output tokens <output id="max-tokens-value" for="max-tokens-slider">300</output></span>
+                <input id="max-tokens-slider" type="range" min="32" max="1024" step="1" value="300" />
+                <small>Controls how long an answer can be.</small>
+              </label>
+              <label class="prompt-control" for="top-p-slider">
+                <span>Top-p <output id="top-p-value" for="top-p-slider">0.95</output></span>
+                <input id="top-p-slider" type="range" min="0" max="1" step="0.01" value="0.95" />
+                <small>Controls how broadly the guide chooses words.</small>
+              </label>
+            </div>
+            <details class="system-prompt-details">
+              <summary>Show the system prompt</summary>
+              <p class="prompt-load-status" id="prompt-load-status" aria-live="polite">Loading the prompt…</p>
+              <pre id="system-prompt-text">Loading the city guide instructions…</pre>
+            </details>
+          </div>
+        </div>
       </section>
 
       <footer class="footer">

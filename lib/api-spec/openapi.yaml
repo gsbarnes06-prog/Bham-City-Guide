@@ -24,6 +24,54 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /chat/system-prompt:
+    get:
+      operationId: getCityChatSystemPrompt
+      tags: [chat]
+      summary: Get the city guide system prompt
+      responses:
+        "200":
+          description: The system prompt used by the city guide
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CitySystemPrompt"
+  /chat:
+    post:
+      operationId: sendCityChat
+      tags: [chat]
+      summary: Ask the Birmingham city guide a question
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CityChatInput"
+      responses:
+        "200":
+          description: The city guide response and generation details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CityChatResponse"
+        "400":
+          description: The chat request is invalid
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "502":
+          description: The city guide could not generate an answer
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "503":
+          description: Gemini is not configured
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
 components:
   schemas:
     HealthStatus:
@@ -33,4 +81,97 @@ components:
           type: string
       required:
         - status
+    ApiError:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+        - error
+    CityChatSettings:
+      type: object
+      properties:
+        temperature:
+          type: number
+          minimum: 0
+          maximum: 2
+        topP:
+          type: number
+          minimum: 0
+          maximum: 1
+        maxOutputTokens:
+          type: integer
+          minimum: 32
+          maximum: 1024
+    CityChatHistoryMessage:
+      type: object
+      properties:
+        role:
+          type: string
+          enum: [user, assistant]
+        content:
+          type: string
+          maxLength: 4000
+      required: [role, content]
+    CityChatInput:
+      type: object
+      properties:
+        message:
+          type: string
+          minLength: 1
+          maxLength: 4000
+        history:
+          type: array
+          maxItems: 24
+          items:
+            $ref: "#/components/schemas/CityChatHistoryMessage"
+        settings:
+          $ref: "#/components/schemas/CityChatSettings"
+      required: [message]
+    CityChatUsage:
+      type: object
+      properties:
+        promptTokens:
+          type: integer
+        outputTokens:
+          type: integer
+        totalTokens:
+          type: integer
+      required: [promptTokens, outputTokens, totalTokens]
+    CityChatResponse:
+      type: object
+      properties:
+        reply:
+          type: string
+        usage:
+          $ref: "#/components/schemas/CityChatUsage"
+        settings:
+          $ref: "#/components/schemas/CityChatResponseSettings"
+        model:
+          type: string
+        truncated:
+          type: boolean
+      required: [reply, usage, settings, model, truncated]
+    CityChatResponseSettings:
+      type: object
+      properties:
+        temperature:
+          type: number
+          minimum: 0
+          maximum: 2
+        topP:
+          type: number
+          minimum: 0
+          maximum: 1
+        maxOutputTokens:
+          type: integer
+          minimum: 32
+          maximum: 1024
+      required: [temperature, topP, maxOutputTokens]
+    CitySystemPrompt:
+      type: object
+      properties:
+        systemPrompt:
+          type: string
+      required: [systemPrompt]
 

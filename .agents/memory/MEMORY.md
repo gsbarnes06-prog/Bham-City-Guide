@@ -1,0 +1,1 @@
+- [Gemini model availability](gemini-model-availability.md) — New API keys may reject Gemini 2.5 Flash; the current working default is Gemini 3.5 Flash-Lite.
