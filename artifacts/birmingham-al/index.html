@@ -26,6 +26,7 @@
           <span class="utility-city"><span class="utility-dot" aria-hidden="true"></span> BIRMINGHAM, AL &nbsp;·&nbsp; THE MAGIC CITY</span>
           <nav class="utility-links" aria-label="Visitor links">
             <a href="#food">FOOD &amp; DRINK</a>
+            <a href="#dish-gallery">DISH GALLERY</a>
             <a href="#quick-facts">CITY FACTS</a>
             <a href="#state-bird">STATE BIRD</a>
             <a href="#local-notes">LOCAL NOTES</a>
@@ -39,6 +40,7 @@
         </a>
         <nav class="main-nav" aria-label="Main navigation">
           <a href="#food">Eat &amp; Drink</a>
+          <a href="#dish-gallery">Dish Gallery</a>
           <a href="#quick-facts">About Birmingham</a>
           <a href="#mayor">City Hall</a>
           <a href="#state-bird">Things to Do</a>
@@ -77,6 +79,35 @@
             <figcaption><span>01</span> A plate worth slowing down for</figcaption>
           </figure>
         </div>
+      </section>
+
+      <section class="dish-gallery-section" id="dish-gallery" aria-labelledby="dish-gallery-title">
+        <div class="dish-gallery-heading">
+          <div class="section-kicker"><span>02 / COMMUNITY TABLE</span><span class="kicker-rule"></span><span>FAVORITE DISHES</span></div>
+          <p class="eyebrow">Made here, shared here</p>
+          <h2 id="dish-gallery-title">Show us what’s<br /><em>on your plate.</em></h2>
+          <p>Share a photo of a Birmingham favorite. Your dish joins the community gallery as soon as it’s saved.</p>
+        </div>
+
+        <form class="dish-upload-form" id="dish-upload-form">
+          <div class="dish-form-fields">
+            <label for="dish-title">Dish name
+              <input id="dish-title" name="title" type="text" maxlength="120" placeholder="Smoked pork plate" required />
+            </label>
+            <label for="dish-caption">A little about it <span>(optional)</span>
+              <textarea id="dish-caption" name="caption" rows="2" maxlength="500" placeholder="Where you found it, or what makes it special"></textarea>
+            </label>
+            <label class="dish-file-label" for="dish-image">Choose a photo
+              <input id="dish-image" name="image" type="file" accept="image/jpeg,image/png,image/webp" required />
+              <small>JPEG, PNG, or WebP · up to 3 MB · resized to 1280 px</small>
+            </label>
+          </div>
+          <button class="dish-submit" id="dish-submit" type="submit">Add to the gallery <span aria-hidden="true">↗</span></button>
+          <p class="dish-upload-status" id="dish-upload-status" aria-live="polite">Your photo will be saved in the Birmingham gallery.</p>
+        </form>
+
+        <p class="dish-gallery-status" id="dish-gallery-status" role="status" aria-live="polite">Loading community favorites…</p>
+        <div class="dish-gallery-grid" id="dish-gallery-grid" aria-label="Favorite dish photos"></div>
       </section>
 
       <section class="facts-section" id="quick-facts" aria-labelledby="facts-title">

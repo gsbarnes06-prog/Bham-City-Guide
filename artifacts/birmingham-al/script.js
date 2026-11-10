@@ -47,6 +47,176 @@ birdButton.addEventListener("click", () => {
   window.setTimeout(() => birdImage.classList.remove("shake"), 700);
 });
 
+// Dish photos are kept on the server, so they remain in the gallery after reloads.
+const MAX_DISH_IMAGE_BYTES = 3 * 1024 * 1024;
+const MAX_DISH_IMAGE_DIMENSION = 1280;
+const dishUploadForm = document.querySelector("#dish-upload-form");
+const dishTitleInput = document.querySelector("#dish-title");
+const dishCaptionInput = document.querySelector("#dish-caption");
+const dishImageInput = document.querySelector("#dish-image");
+const dishSubmitButton = document.querySelector("#dish-submit");
+const dishUploadStatus = document.querySelector("#dish-upload-status");
+const dishGalleryStatus = document.querySelector("#dish-gallery-status");
+const dishGalleryGrid = document.querySelector("#dish-gallery-grid");
+
+function dishPhotoCard(photo) {
+  const card = document.createElement("article");
+  card.className = "dish-card";
+
+  const image = document.createElement("img");
+  image.className = "dish-card-image";
+  image.src = photo.imageUrl;
+  image.alt = `Photo of ${photo.title}`;
+  image.loading = "lazy";
+  image.decoding = "async";
+  card.appendChild(image);
+
+  const copy = document.createElement("div");
+  copy.className = "dish-card-copy";
+
+  const title = document.createElement("h3");
+  title.textContent = photo.title;
+  copy.appendChild(title);
+
+  if (photo.caption) {
+    const caption = document.createElement("p");
+    caption.textContent = photo.caption;
+    copy.appendChild(caption);
+  }
+
+  const date = document.createElement("time");
+  date.className = "dish-card-date";
+  date.dateTime = photo.createdAt;
+  const parsedDate = new Date(photo.createdAt);
+  date.textContent = Number.isNaN(parsedDate.getTime())
+    ? "Recently shared"
+    : parsedDate.toLocaleDateString(undefined, {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      });
+  copy.appendChild(date);
+  card.appendChild(copy);
+  return card;
+}
+
+async function loadDishGallery() {
+  try {
+    const response = await fetch("/api/dishes");
+    const photos = await response.json();
+    if (!response.ok || !Array.isArray(photos)) {
+      throw new Error(photos.error || "The dish gallery could not be loaded.");
+    }
+
+    dishGalleryGrid.replaceChildren(...photos.map(dishPhotoCard));
+    dishGalleryStatus.textContent = photos.length
+      ? `${photos.length} ${photos.length === 1 ? "dish photo" : "dish photos"} shared`
+      : "No photos yet. Add the first Birmingham favorite.";
+  } catch {
+    dishGalleryStatus.textContent = "The dish gallery could not be loaded. Please refresh to try again.";
+  }
+}
+
+function readBlobAsDataUrl(blob) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.addEventListener("load", () => resolve(reader.result));
+    reader.addEventListener("error", () => reject(new Error("The photo could not be read.")));
+    reader.readAsDataURL(blob);
+  });
+}
+
+async function resizeDishPhoto(file) {
+  const bitmap = await createImageBitmap(file);
+  const scale = Math.min(
+    1,
+    MAX_DISH_IMAGE_DIMENSION / Math.max(bitmap.width, bitmap.height),
+  );
+  const canvas = document.createElement("canvas");
+  canvas.width = Math.max(1, Math.round(bitmap.width * scale));
+  canvas.height = Math.max(1, Math.round(bitmap.height * scale));
+
+  const context = canvas.getContext("2d");
+  if (!context) {
+    bitmap.close();
+    throw new Error("This browser could not prepare the photo.");
+  }
+
+  context.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+  bitmap.close();
+
+  const resizedBlob = await new Promise((resolve) => {
+    canvas.toBlob(resolve, file.type, file.type === "image/png" ? undefined : 0.88);
+  });
+  if (!resizedBlob) {
+    throw new Error("This browser could not prepare the photo.");
+  }
+  if (resizedBlob.size > MAX_DISH_IMAGE_BYTES) {
+    throw new Error("The resized photo is still over 3 MB. Choose a smaller image.");
+  }
+
+  return readBlobAsDataUrl(resizedBlob);
+}
+
+dishUploadForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const title = dishTitleInput.value.trim();
+  const caption = dishCaptionInput.value.trim();
+  const file = dishImageInput.files[0];
+
+  if (!title) {
+    dishUploadStatus.textContent = "Add a name for your dish first.";
+    dishTitleInput.focus();
+    return;
+  }
+  if (!file) {
+    dishUploadStatus.textContent = "Choose a photo to upload.";
+    dishImageInput.focus();
+    return;
+  }
+  if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+    dishUploadStatus.textContent = "Choose a JPEG, PNG, or WebP photo. GIFs are not supported.";
+    dishImageInput.value = "";
+    dishImageInput.focus();
+    return;
+  }
+  if (file.size > MAX_DISH_IMAGE_BYTES) {
+    dishUploadStatus.textContent = "This photo is over 3 MB. Choose a smaller JPEG, PNG, or WebP file.";
+    dishImageInput.focus();
+    return;
+  }
+
+  dishSubmitButton.disabled = true;
+  dishUploadStatus.textContent = "Preparing and saving your photo…";
+
+  try {
+    const image = await resizeDishPhoto(file);
+    const response = await fetch("/api/dishes", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ title, caption, image }),
+    });
+    const result = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      throw new Error(result.error || "The photo could not be saved.");
+    }
+
+    dishGalleryGrid.prepend(dishPhotoCard(result));
+    const count = dishGalleryGrid.children.length;
+    dishGalleryStatus.textContent = `${count} ${count === 1 ? "dish photo" : "dish photos"} shared`;
+    dishUploadStatus.textContent = "Your dish is in the gallery.";
+    dishUploadForm.reset();
+  } catch (error) {
+    dishUploadStatus.textContent = error instanceof Error
+      ? error.message
+      : "The photo could not be saved. Please try again.";
+  } finally {
+    dishSubmitButton.disabled = false;
+  }
+});
+
+loadDishGallery();
+
 // Chat messages and their history live only in this page session.
 const chatForm = document.querySelector("#chat-form");
 const chatInput = document.querySelector("#chat-input");

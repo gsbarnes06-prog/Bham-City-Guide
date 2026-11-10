@@ -92,3 +92,40 @@ export interface CitySystemPrompt {
   systemPrompt: string;
 }
 
+export interface DishPhotoInput {
+  /**
+     * @minLength 1
+     * @maxLength 120
+     */
+  title: string;
+  /** @maxLength 500 */
+  caption?: string;
+  /**
+     * JPEG, PNG, or WebP image data URL, at most 3 MiB when decoded
+     * @minLength 1
+     * @maxLength 4194327
+     * @pattern ^data:image/(jpeg|png|webp);base64,[A-Za-z0-9+/]+={0,2}$
+     */
+  image: string;
+}
+
+export type DishPhotoMimeType = typeof DishPhotoMimeType[keyof typeof DishPhotoMimeType];
+
+
+export const DishPhotoMimeType = {
+  'image/jpeg': 'image/jpeg',
+  'image/png': 'image/png',
+  'image/webp': 'image/webp',
+} as const;
+
+export interface DishPhoto {
+  id: number;
+  title: string;
+  caption: string;
+  mimeType: DishPhotoMimeType;
+  /** @nullable */
+  inspectorNote: string | null;
+  createdAt: string;
+  imageUrl: string;
+}
+

@@ -10,6 +10,8 @@ servers:
 tags:
   - name: health
     description: Health operations
+  - name: dishes
+    description: Birmingham dish photo gallery
 paths:
   /healthz:
     get:
@@ -68,6 +70,83 @@ paths:
                 $ref: "#/components/schemas/ApiError"
         "503":
           description: Gemini is not configured
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /dishes:
+    get:
+      operationId: listDishPhotos
+      tags: [dishes]
+      summary: List dish photos, newest first
+      responses:
+        "200":
+          description: Dish photos without embedded image data
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/DishPhoto"
+    post:
+      operationId: createDishPhoto
+      tags: [dishes]
+      summary: Add a dish photo
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DishPhotoInput"
+      responses:
+        "201":
+          description: The saved dish photo
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DishPhoto"
+        "400":
+          description: The photo details or image format are invalid
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "413":
+          description: The upload exceeds the image size limit
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /dishes/{id}/image:
+    get:
+      operationId: getDishPhotoImage
+      tags: [dishes]
+      summary: Get dish photo bytes
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        "200":
+          description: The original uploaded image
+          content:
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+            image/png:
+              schema:
+                type: string
+                format: binary
+            image/webp:
+              schema:
+                type: string
+                format: binary
+        "404":
+          description: No dish photo exists with this ID
           content:
             application/json:
               schema:
@@ -174,4 +253,41 @@ components:
         systemPrompt:
           type: string
       required: [systemPrompt]
+    DishPhotoInput:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 120
+        caption:
+          type: string
+          maxLength: 500
+        image:
+          type: string
+          minLength: 1
+          maxLength: 4194327
+          pattern: "^data:image/(jpeg|png|webp);base64,[A-Za-z0-9+/]+={0,2}$"
+          description: JPEG, PNG, or WebP image data URL, at most 3 MiB when decoded
+      required: [title, image]
+    DishPhoto:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        caption:
+          type: string
+        mimeType:
+          type: string
+          enum: [image/jpeg, image/png, image/webp]
+        inspectorNote:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+          format: date-time
+        imageUrl:
+          type: string
+      required: [id, title, caption, mimeType, inspectorNote, createdAt, imageUrl]
 
