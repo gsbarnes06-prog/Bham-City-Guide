@@ -129,3 +129,8 @@ export interface DishPhoto {
   imageUrl: string;
 }
 
+export interface DishPhotoRejection {
+  error: string;
+  reason: string;
+}
+

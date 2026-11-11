@@ -84,6 +84,13 @@ function dishPhotoCard(photo) {
     copy.appendChild(caption);
   }
 
+  if (photo.inspectorNote) {
+    const inspectorNote = document.createElement("p");
+    inspectorNote.className = "dish-inspector-note";
+    inspectorNote.textContent = photo.inspectorNote;
+    copy.appendChild(inspectorNote);
+  }
+
   const date = document.createElement("time");
   date.className = "dish-card-date";
   date.dateTime = photo.createdAt;

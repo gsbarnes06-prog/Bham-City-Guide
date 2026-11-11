@@ -7,6 +7,8 @@ import {
   ListDishPhotosResponse,
 } from "@workspace/api-zod";
 import { db, dishPhotosTable } from "@workspace/db";
+import { CITY_SETTINGS } from "../city";
+import { inspectDishPhoto } from "../agents/dishInspector";
 
 const router: IRouter = Router();
 const MAX_IMAGE_BYTES = 3 * 1024 * 1024;
@@ -114,6 +116,25 @@ router.post("/dishes", async (req, res): Promise<void> => {
     return;
   }
 
+  let inspection;
+  try {
+    inspection = await inspectDishPhoto(parsed.data.image);
+  } catch (err) {
+    req.log.error({ err }, "Dish photo inspection failed");
+    res.status(502).json({
+      error: "The dish inspector is unavailable right now. Please try again shortly.",
+    });
+    return;
+  }
+
+  if (!inspection.isMatch || inspection.confidence < 0.7) {
+    res.status(422).json({
+      error: `Only ${CITY_SETTINGS.favoriteDish} photos can be uploaded!`,
+      reason: `The inspector saw: ${inspection.whatISee}`,
+    });
+    return;
+  }
+
   const [photo] = await db
     .insert(dishPhotosTable)
     .values({
@@ -121,6 +142,7 @@ router.post("/dishes", async (req, res): Promise<void> => {
       caption: parsed.data.caption?.trim() ?? "",
       mimeType: image.mimeType,
       imageBase64: image.bytes.toString("base64"),
+      inspectorNote: `Inspector: looks like ${CITY_SETTINGS.favoriteDish} (${Math.round(inspection.confidence * 100)}% sure)`,
     })
     .returning();
 

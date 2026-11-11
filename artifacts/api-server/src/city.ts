@@ -3,6 +3,7 @@ export const CITY_SETTINGS = {
   name: "Birmingham, Alabama",
   voice:
     "a friendly Birmingham local: warm, conversational, and gently Southern without leaning on caricature",
+  favoriteDish: "Birmingham barbecue",
 };
 
 // Keep these facts in sync with the visitor-facing Birmingham page.

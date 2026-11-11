@@ -117,6 +117,18 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ApiError"
+        "422":
+          description: The inspector rejected the photo
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DishPhotoRejection"
+        "502":
+          description: The dish inspector is unavailable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
   /dishes/{id}/image:
     get:
       operationId: getDishPhotoImage
@@ -290,4 +302,12 @@ components:
         imageUrl:
           type: string
       required: [id, title, caption, mimeType, inspectorNote, createdAt, imageUrl]
+    DishPhotoRejection:
+      type: object
+      properties:
+        error:
+          type: string
+        reason:
+          type: string
+      required: [error, reason]
 

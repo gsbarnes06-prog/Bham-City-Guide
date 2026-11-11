@@ -26,6 +26,7 @@ import type {
   CitySystemPrompt,
   DishPhoto,
   DishPhotoInput,
+  DishPhotoRejection,
   HealthStatus
 } from './api.schemas';
 
@@ -418,7 +419,7 @@ return customFetch<DishPhoto>(getCreateDishPhotoUrl(),
 
 export const getCreateDishPhotoMutationKey = () => ['createDishPhoto'] as const;
 
-export const getCreateDishPhotoMutationOptions = <TError = ErrorType<ApiError>,
+export const getCreateDishPhotoMutationOptions = <TError = ErrorType<ApiError | DishPhotoRejection>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createDishPhoto>>, TError,CreateDishPhotoMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
 ): UseMutationOptions<Awaited<ReturnType<typeof createDishPhoto>>, TError,CreateDishPhotoMutationVariables, TContext> => {
 
@@ -447,13 +448,13 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type CreateDishPhotoMutationResult = NonNullable<Awaited<ReturnType<typeof createDishPhoto>>>
     export type CreateDishPhotoMutationBody = BodyType<DishPhotoInput>
-    export type CreateDishPhotoMutationError = ErrorType<ApiError>
+    export type CreateDishPhotoMutationError = ErrorType<ApiError | DishPhotoRejection>
     export type CreateDishPhotoMutationVariables = {data: BodyType<DishPhotoInput>}
 
     /**
  * @summary Add a dish photo
  */
-export const useCreateDishPhoto = <TError = ErrorType<ApiError>,
+export const useCreateDishPhoto = <TError = ErrorType<ApiError | DishPhotoRejection>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createDishPhoto>>, TError,CreateDishPhotoMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
  ): UseMutationResult<
         Awaited<ReturnType<typeof createDishPhoto>>,

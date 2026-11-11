@@ -18,4 +18,5 @@ export * from './citySystemPrompt';
 export * from './dishPhoto';
 export * from './dishPhotoInput';
 export * from './dishPhotoMimeType';
+export * from './dishPhotoRejection';
 export * from './healthStatus';
