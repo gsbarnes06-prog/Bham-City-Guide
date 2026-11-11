@@ -20,3 +20,5 @@ export * from './dishPhotoInput';
 export * from './dishPhotoMimeType';
 export * from './dishPhotoRejection';
 export * from './healthStatus';
+export * from './unsplashDownloadInput';
+export * from './unsplashInspirationPhoto';

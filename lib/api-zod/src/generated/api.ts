@@ -144,3 +144,35 @@ export const GetDishPhotoImageParams = zod.object({
 export const GetDishPhotoImageResponse = zod.unknown()
 
 
+/**
+ * @summary Search Unsplash for dish inspiration
+ */
+export const GetDishInspirationResponseItem = zod.object({
+  "id": zod.string(),
+  "imageUrl": zod.string().url(),
+  "rawUrl": zod.string().url(),
+  "altText": zod.string(),
+  "photographerName": zod.string(),
+  "photographerProfileUrl": zod.string().url(),
+  "downloadLocation": zod.string().url()
+})
+export const GetDishInspirationResponse = zod.array(GetDishInspirationResponseItem)
+
+
+/**
+ * @summary Track a user expanding an inspiration photo
+ */
+export const trackUnsplashPhotoDownloadBodyPhotoIdMax = 80;
+
+export const trackUnsplashPhotoDownloadBodyDownloadLocationMax = 2048;
+
+
+
+export const TrackUnsplashPhotoDownloadBody = zod.object({
+  "photoId": zod.string().min(1).max(trackUnsplashPhotoDownloadBodyPhotoIdMax),
+  "downloadLocation": zod.string().url().max(trackUnsplashPhotoDownloadBodyDownloadLocationMax)
+})
+
+export const TrackUnsplashPhotoDownloadResponse = zod.void()
+
+

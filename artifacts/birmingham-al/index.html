@@ -110,6 +110,30 @@
         <div class="dish-gallery-grid" id="dish-gallery-grid" aria-label="Favorite dish photos"></div>
       </section>
 
+      <section class="inspiration-section" id="dish-inspiration" aria-labelledby="inspiration-title">
+        <div class="inspiration-heading">
+          <div>
+            <p class="eyebrow">Fresh finds from Unsplash</p>
+            <h2 id="inspiration-title">A little more<br /><em>food for thought.</em></h2>
+            <p>Explore more Birmingham barbecue inspiration, selected from photos on Unsplash.</p>
+          </div>
+          <button class="inspiration-refresh" id="inspiration-refresh" type="button">
+            Refresh inspiration <span aria-hidden="true">↻</span>
+          </button>
+        </div>
+        <p class="inspiration-status" id="inspiration-status" role="status" aria-live="polite">Loading food inspiration…</p>
+        <div class="inspiration-grid" id="inspiration-grid" aria-label="Food inspiration photos"></div>
+        <p class="inspiration-attribution">
+          Photos from <a href="https://unsplash.com/?utm_source=birmingham_al_city_guide&amp;utm_medium=referral" target="_blank" rel="noopener noreferrer">Unsplash</a>.
+          Open a photo to view it larger and support its photographer.
+        </p>
+        <dialog class="inspiration-dialog" id="inspiration-dialog" aria-label="Expanded inspiration photo">
+          <button class="inspiration-close" id="inspiration-close" type="button" aria-label="Close expanded photo">×</button>
+          <img id="inspiration-expanded-image" alt="" />
+          <p class="inspiration-expanded-credit" id="inspiration-expanded-credit"></p>
+        </dialog>
+      </section>
+
       <section class="facts-section" id="quick-facts" aria-labelledby="facts-title">
         <div class="facts-heading">
           <p class="eyebrow">A few things to know</p>

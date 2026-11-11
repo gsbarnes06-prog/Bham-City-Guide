@@ -163,6 +163,64 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ApiError"
+  /unsplash/dish-inspiration:
+    get:
+      operationId: getDishInspiration
+      tags: [dishes]
+      summary: Search Unsplash for dish inspiration
+      responses:
+        "200":
+          description: Up to six attributed Unsplash photos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/UnsplashInspirationPhoto"
+        "502":
+          description: Unsplash could not return inspiration
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "503":
+          description: Unsplash is not configured
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+  /unsplash/dish-inspiration/download:
+    post:
+      operationId: trackUnsplashPhotoDownload
+      tags: [dishes]
+      summary: Track a user expanding an inspiration photo
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UnsplashDownloadInput"
+      responses:
+        "204":
+          description: Unsplash download event recorded
+        "400":
+          description: The download URL is invalid
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "502":
+          description: Unsplash could not record the download event
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "503":
+          description: Unsplash is not configured
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
 components:
   schemas:
     HealthStatus:
@@ -310,4 +368,38 @@ components:
         reason:
           type: string
       required: [error, reason]
+    UnsplashInspirationPhoto:
+      type: object
+      properties:
+        id:
+          type: string
+        imageUrl:
+          type: string
+          format: uri
+        rawUrl:
+          type: string
+          format: uri
+        altText:
+          type: string
+        photographerName:
+          type: string
+        photographerProfileUrl:
+          type: string
+          format: uri
+        downloadLocation:
+          type: string
+          format: uri
+      required: [id, imageUrl, rawUrl, altText, photographerName, photographerProfileUrl, downloadLocation]
+    UnsplashDownloadInput:
+      type: object
+      properties:
+        photoId:
+          type: string
+          minLength: 1
+          maxLength: 80
+        downloadLocation:
+          type: string
+          format: uri
+          maxLength: 2048
+      required: [photoId, downloadLocation]
 

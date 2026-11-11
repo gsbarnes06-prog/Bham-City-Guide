@@ -224,6 +224,107 @@ dishUploadForm.addEventListener("submit", async (event) => {
 
 loadDishGallery();
 
+// Inspiration photos stay hotlinked to Unsplash and are fetched through our API.
+const inspirationGrid = document.querySelector("#inspiration-grid");
+const inspirationStatus = document.querySelector("#inspiration-status");
+const inspirationRefreshButton = document.querySelector("#inspiration-refresh");
+const inspirationDialog = document.querySelector("#inspiration-dialog");
+const inspirationExpandedImage = document.querySelector("#inspiration-expanded-image");
+const inspirationExpandedCredit = document.querySelector("#inspiration-expanded-credit");
+const inspirationCloseButton = document.querySelector("#inspiration-close");
+
+function buildInspirationCard(photo) {
+  const card = document.createElement("article");
+  card.className = "inspiration-card";
+
+  const expandButton = document.createElement("button");
+  expandButton.className = "inspiration-photo-button";
+  expandButton.type = "button";
+  expandButton.setAttribute("aria-label", `Expand photo: ${photo.altText}`);
+
+  const image = document.createElement("img");
+  image.src = photo.imageUrl;
+  image.alt = photo.altText;
+  image.loading = "lazy";
+  image.decoding = "async";
+  expandButton.appendChild(image);
+  expandButton.addEventListener("click", () => openInspirationPhoto(photo));
+
+  const credit = document.createElement("p");
+  credit.className = "inspiration-credit";
+  credit.append("Photo by ");
+  const photographer = document.createElement("a");
+  photographer.href = photo.photographerProfileUrl;
+  photographer.target = "_blank";
+  photographer.rel = "noopener noreferrer";
+  photographer.textContent = photo.photographerName;
+  credit.appendChild(photographer);
+
+  card.append(expandButton, credit);
+  return card;
+}
+
+function openInspirationPhoto(photo) {
+  inspirationExpandedImage.src = photo.rawUrl;
+  inspirationExpandedImage.alt = photo.altText;
+  inspirationExpandedCredit.replaceChildren();
+  inspirationExpandedCredit.append("Photo by ");
+
+  const photographer = document.createElement("a");
+  photographer.href = photo.photographerProfileUrl;
+  photographer.target = "_blank";
+  photographer.rel = "noopener noreferrer";
+  photographer.textContent = photo.photographerName;
+  inspirationExpandedCredit.appendChild(photographer);
+
+  inspirationDialog.showModal();
+
+  // Unsplash requires download tracking for actions like opening a photo larger.
+  fetch("/api/unsplash/dish-inspiration/download", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      photoId: photo.id,
+      downloadLocation: photo.downloadLocation,
+    }),
+  }).catch(() => {
+    inspirationStatus.textContent = "The photo opened, but its view could not be recorded.";
+  });
+}
+
+async function loadDishInspiration() {
+  inspirationRefreshButton.disabled = true;
+  inspirationStatus.textContent = "Finding fresh food inspiration…";
+
+  try {
+    const response = await fetch("/api/unsplash/dish-inspiration", {
+      cache: "no-store",
+    });
+    const photos = await response.json();
+    if (!response.ok || !Array.isArray(photos)) {
+      throw new Error(photos.error || "Food inspiration could not load right now.");
+    }
+
+    inspirationGrid.replaceChildren(...photos.map(buildInspirationCard));
+    inspirationStatus.textContent = photos.length
+      ? `Showing ${photos.length} photos inspired by Birmingham barbecue.`
+      : "No inspiration photos were found. Try refreshing in a moment.";
+  } catch (error) {
+    inspirationStatus.textContent = error instanceof Error
+      ? error.message
+      : "Food inspiration could not load right now. Please try again.";
+  } finally {
+    inspirationRefreshButton.disabled = false;
+  }
+}
+
+inspirationRefreshButton.addEventListener("click", loadDishInspiration);
+inspirationCloseButton.addEventListener("click", () => inspirationDialog.close());
+inspirationDialog.addEventListener("click", (event) => {
+  if (event.target === inspirationDialog) inspirationDialog.close();
+});
+loadDishInspiration();
+
 // Chat messages and their history live only in this page session.
 const chatForm = document.querySelector("#chat-form");
 const chatInput = document.querySelector("#chat-input");

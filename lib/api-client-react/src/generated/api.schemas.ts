@@ -134,3 +134,23 @@ export interface DishPhotoRejection {
   reason: string;
 }
 
+export interface UnsplashInspirationPhoto {
+  id: string;
+  imageUrl: string;
+  rawUrl: string;
+  altText: string;
+  photographerName: string;
+  photographerProfileUrl: string;
+  downloadLocation: string;
+}
+
+export interface UnsplashDownloadInput {
+  /**
+     * @minLength 1
+     * @maxLength 80
+     */
+  photoId: string;
+  /** @maxLength 2048 */
+  downloadLocation: string;
+}
+
